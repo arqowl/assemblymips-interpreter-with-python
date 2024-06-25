@@ -1,5 +1,13 @@
 # Documentação do Interpretador de Assembly da disciplina de Paradigmas de linguagem de programação
 
+## 🤝 Colaboradores
+- [Arquimedes](https://github.com/arqowl)
+- [Maca](https://github.com/victormacaubas)
+- [Maria do C.](https://github.com/Madu-dev)
+- [Mari](https://github.com/marianazanon)
+- [Thobias](https://github.com/dashp21)
+
+
 ## Matriz RACI - Atividades vs Responsabilidades
 | Atividade                                | Responsável |
 |------------------------------------------|-------------|
