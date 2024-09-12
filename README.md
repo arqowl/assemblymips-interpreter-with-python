@@ -2,50 +2,28 @@
 
 ## 🤝 Colaboradores
 - [Arquimedes](https://github.com/arqowl)
-- [Maca](https://github.com/victormacaubas)
-- [Maria do C.](https://github.com/Madu-dev)
-- [Mari](https://github.com/marianazanon)
-- [Thobias](https://github.com/dashp21)
+- [Gil](https://github.com/Gil32610)
 
+## Contextualização
+- O problema do jantar dos filósofos é um clássico na área de concorrência, parte fundamental da programação paralela e distribuída. Foi proposto por Edsger Dijkstra para ilustrar os desafios de sincronização e evitar deadlocks em sistemas paralelos. A ideia é a seguinte:
+      1. Cinco filósofos estão sentados ao redor de uma mesa circular. Cada filósofo alterna entre comer e pensar. Para comer, eles precisam pegar dois garfos (um de cada lado do prato). No entanto, só há cinco garfos, então eles precisam coordenar entre si para evitar situações onde todos pegam um garfo e ficam esperando eternamente pelo outro (o que levaria a um deadlock).
 
-## Matriz RACI - Atividades vs Responsabilidades
-| Atividade                                | Responsável |
-|------------------------------------------|-------------|
-| Gramática do Assembly MIPS               | Arquimedes  |
-| Organização do GITHUB e ambiente Python  | Maca        |
-| Analisador Léxico                        | Maria do C. |
-| Analisador Sintático                     | Maca        |
-| Analisador Semântico                     | Thobias     |
-| Gestor de erros                          | Mari        |
-| Documentação do Interpretador            | Arquimedes  |
+## Perspectiva na programação paralela e distribuída
+    1. *Concorrência:* Cada filósofo representa uma thread ou processo que compete por recursos compartilhados (os garfos). No contexto de programação paralela, esses processos precisam acessar os recursos de forma sincronizada para evitar problemas como condições de corrida, onde múltiplos processos tentam acessar o mesmo recurso ao mesmo tempo.
+    2. *Problemas Clássicos:*
+        - `Deadlock:` Se cada filósofo pegar um garfo e esperar pelo outro, ninguém conseguirá comer. Esse é o deadlock, uma situação onde todos os processos ficam presos esperando por recursos que nunca serão liberados. Em sistemas distribuídos, deadlock pode ocorrer quando diferentes nós ou processos aguardam indefinidamente pela liberação de recursos compartilhados.
+        - `Starvation (Inanição):` Mesmo que o deadlock seja evitado, um ou mais filósofos podem nunca conseguir comer se os outros sempre pegarem os garfos antes deles. Em um sistema distribuído, isso ocorre quando certos processos ou nós têm prioridade menor ou são constantemente preteridos, levando a ineficiência.
 
-## Pontos importantes do Interpretador `sobre Testes`
-- Ele possui duas formas de testes:
-    1. Testes unitários a partir da metodologia TDD que facilitaram a construção do código;
-    2. Leitura arquivo "sample_app.asm" com a finalidade visualizar a funcionalidade de interpretação em si no *main.py*.
+## Nossa Solução
+    1. *Locks e Synchronized*
+O uso de locks e do modificador synchronized em linguagens como Java é uma abordagem comum para gerenciar o acesso de múltiplas threads a recursos compartilhados, como os garfos no problema dos filósofos. O conceito de exclusão mútua (mutual exclusion) é central aqui.
+        - `Como funciona:` Cada filósofo (ou thread) tenta pegar dois garfos (recursos). Para garantir que dois filósofos não peguem o mesmo garfo ao mesmo tempo, usamos locks. Em Java, isso pode ser implementado com o modificador synchronized. Quando um filósofo pega um garfo (ou entra em uma região crítica), ele adquire um lock sobre esse garfo, e nenhuma outra thread pode acessar esse recurso até que o lock seja liberado.
 
+    2. *Troca de Mensagens (Composite Pattern)*
+A troca de mensagens é uma abordagem comum em sistemas distribuídos. Ao invés de ter threads ou processos compartilhando recursos diretamente (como os garfos), eles trocam mensagens para coordenar suas ações. Isso é útil quando se trabalha com múltiplos nós em sistemas distribuídos.
+     - `Como funciona:` Em vez de filósofos competirem diretamente pelos garfos, eles enviam mensagens solicitando e liberando recursos. Cada filósofo comunica suas intenções de pegar um garfo ou devolvê-lo. Essa abordagem é escalável e evita deadlocks, pois pode ser feita em um ambiente totalmente distribuído, onde cada recurso é gerido por um nó separado.
 
-## Pontos importantes do Interpretador `sobre o Código`
-- O "sample_app.asm" funciona da seguinte forma:
-    1. O código está preso em um loop que continuamente carrega valores da memória, realiza operações aritméticas e verifica condições de igualdade entre os resultados.
-    2. O loop só sai da parte condicional (entre label1 e label2) se $t3 for igual a $t4. No entanto, devido à natureza das operações (soma e subtração), $t3 e $t4 só serão iguais se ambos $t0 e $t2 forem zero. Caso contrário, o código continua no loop.
-    3. Assim, o código calcula t5 = t3 + 10 sempre que a condição beq é satisfeita e então retorna ao início do loop.
-    4. Desta forma, o código é capaz de contemplar as instruções I, R e J, abordando loops e condicionais, algo que uma linguagem de baixo nível como o Assembly precisa ter.
+    3. *Wait/Notify (ou Wait/Signal)*
+O uso de wait() e notify() (ou notifyAll()) é outra maneira eficiente de coordenar threads em ambientes de concorrência, particularmente em situações onde uma thread precisa aguardar até que um recurso esteja disponível.
 
-## Pontos importantes do Interpretador `sobre o Tratamento de erros`
-- Os tratamentos de erros são tratados pelos *tipos* de erros e pela localização onde eles se encontram.
-- Tipos de erros que herdam da classe "MIPSInterpreterError":
-    1. Léxico;
-    2. Sintático;
-    3. Semântico.
-
-## Pontos importantes do Interpretador `sobre a Gramática`
-- a Gramática Livre de Contexto foi a primeira atividade feita pelo grupo e também inspirada nas instruções aprendidas durantes as duas disciplinas de Arquitetura de computadores 1 e 2.
-
-## Pontos importantes do Interpretador `sobre Recomendações`
-- Algumas observações e recomendações:
-    1. Recomendamos que o repositório seja aberto no Gitpod.io para os testes rodem de forma assertiva. Caso não seja possível, tentar executar *pip install pytest* no terminal da sua IDE;
-    2. Para rodar o arquivo main.py que carrega e lê o arquivo em assembly o comando que tem a ser executado no terminal é *python src/main.py*
-
-## Pontos importantes do Interpretador `sobre o Interpretador em si`
-- O Código criado é um Interpretador propriamente dito e não um compilador, pois o Assembly está sendo interpretado por uma linguagem interpretada.
+- `Como funciona:` Um filósofo só pode comer quando os dois garfos estão disponíveis. Se um dos garfos não estiver disponível, o filósofo pode chamar wait() para liberar a CPU até que o garfo fique disponível (ou seja, até que outra thread libere o garfo). Quando um filósofo termina de comer e devolve os garfos, ele pode chamar notify() ou notifyAll() para acordar as threads que estavam esperando por esses recursos.
